@@ -35,13 +35,26 @@ public class VideoInput : MonoBehaviour {
 
         // Set the video to play. URL supports local absolute or relative paths.
         // Here, using absolute.
+
         
         videoPlayer.url = pathAbsorber.path;
-           
-            
+        if (System.IO.File.Exists(pathAbsorber.path))
+        {
+            videoPlayer.loopPointReached += EndReached;
+        }
 
-            // Restart from beginning when done.
-            videoPlayer.isLooping = false;
+        if (!System.IO.File.Exists(pathAbsorber.path))
+        {
+            videoPlayer.url = ChooseFile.path1;
+            videoPlayer.loopPointReached += EndReached1;
+        }
+        
+
+
+
+
+        // Restart from beginning when done.
+        videoPlayer.isLooping = false;
 
             // Each time we reach the end, we slow down the playback by a factor of 10.
             
@@ -52,6 +65,28 @@ public class VideoInput : MonoBehaviour {
             // its prepareCompleted event.
             videoPlayer.Play();
         }
+
+    void EndReached(UnityEngine.Video.VideoPlayer vp)
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    void EndReached1(UnityEngine.Video.VideoPlayer vp)
+    {
+        videoPlayer.url = ChooseFile.path2;
+        videoPlayer.loopPointReached += EndReached2;
+
+    }
+    void EndReached2(UnityEngine.Video.VideoPlayer vp)
+    {
+        videoPlayer.url = ChooseFile.path3;
+        videoPlayer.loopPointReached += EndReached3;
+    }
+
+    void EndReached3(UnityEngine.Video.VideoPlayer vp)
+    {
+        SceneManager.LoadScene(0);
+    }
 
     void Awake()
     {
@@ -68,8 +103,9 @@ public class VideoInput : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.B))
         {
             int currentIndex = SceneManager.GetActiveScene().buildIndex;
-            SceneManager.LoadScene(currentIndex - 1);
+            SceneManager.LoadScene(0);
         }
+        
         
     }
 
